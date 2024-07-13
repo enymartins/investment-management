@@ -1,12 +1,10 @@
-import { Column, Entity } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
 import { RootEntity } from "./root.entity"
+import { User } from "./user.entity"
 
 
 @Entity({ name: 'investment' })
 export class Investment extends RootEntity {
-    @Column()
-    clientId: string
-
     @Column('decimal', { precision: 15, scale: 2 })
     originalAmount: number
 
@@ -18,4 +16,8 @@ export class Investment extends RootEntity {
 
     @Column('decimal', { precision: 15, scale: 2, default: 0 })
     withdrawnAmount: number
+
+    @ManyToOne(() => User, user => user.investments)
+    @JoinColumn({ name: 'user_id' })
+    user: User
 }
