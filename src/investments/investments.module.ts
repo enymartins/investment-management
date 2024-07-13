@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-import { InvestmentsService } from './investments.service';
-import { InvestmentsController } from './investments.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Investment } from 'src/db/entities/investment.entity';
+import { Module } from '@nestjs/common'
+import { InvestmentsService } from './investments.service'
+import { InvestmentsController } from './investments.controller'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { Investment } from 'src/db/entities/investment.entity'
+import { UsersModule } from 'src/users/users.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Investment])],
+  imports: [TypeOrmModule.forFeature([Investment]), UsersModule],
   providers: [InvestmentsService],
-  controllers: [InvestmentsController]
+  controllers: [InvestmentsController],
 })
 export class InvestmentsModule {}
