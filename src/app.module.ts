@@ -6,13 +6,15 @@ import { AppService } from './app.service'
 import { DbModule } from './db/db.module'
 import { InvestmentsModule } from './investments/investments.module'
 import { UsersModule } from './users/users.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     InvestmentsModule,
     DbModule,
-    UsersModule
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

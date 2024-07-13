@@ -13,6 +13,9 @@ export class User extends RootEntity {
   @Column({ unique: true })
   cpf: string
 
+  @Column({ nullable: true })
+  password: string
+
   @OneToMany(() => Investment, (investment) => investment.user)
   investments: Investment[]
 }
