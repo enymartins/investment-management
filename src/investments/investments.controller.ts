@@ -10,7 +10,7 @@ import { InvestmentsService } from './investments.service'
 @ApiBearerAuth()
 @Controller('investments')
 export class InvestmentsController {
-  constructor(private readonly investmentsService: InvestmentsService) { }
+  constructor(private readonly investmentsService: InvestmentsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Criar Investimento' })

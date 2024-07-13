@@ -46,12 +46,17 @@ export class UsersService {
     return cpf.replace(/\D/g, '')
   }
 
-  async findByUserId(id: string): Promise<User> {
+  async findByUserId(id: string): Promise<UserOutputDto> {
     const user = await this.userRepository.findOne({ where: { id } })
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found.`)
     }
-    return user
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      cpf: user.cpf,
+    }
   }
 
   async findByCpf(cpf: string): Promise<UserDto> {
