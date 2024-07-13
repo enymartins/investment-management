@@ -17,7 +17,7 @@ export class InvestmentsService {
     createInvestmentDto: CreateInvestmentDto,
     userId: string,
   ): Promise<Investment> {
-    const { amount } = createInvestmentDto
+    const { amount, creationDate } = createInvestmentDto
 
     const user = await this.usersService.findByUserId(userId)
 
@@ -25,6 +25,7 @@ export class InvestmentsService {
       amount,
       originalAmount: amount,
       user,
+      creationDate,
     })
 
     return this.investmentRepository.save(newInvestment)
