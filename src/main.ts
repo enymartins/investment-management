@@ -9,6 +9,7 @@ async function bootstrap() {
     .setTitle('Investment Management API')
     .setDescription('API para gerenciamento de investimentos')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

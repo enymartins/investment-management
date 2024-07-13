@@ -1,11 +1,13 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthGuard } from 'src/auth/auth.guard'
 import { Investment } from 'src/db/entities/investment.entity'
 import { CreateInvestmentDto } from './dtos/create-investment.dto'
 import { InvestmentsService } from './investments.service'
-@UseGuards(AuthGuard)
+
 @ApiTags('investments')
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller('investments')
 export class InvestmentsController {
   constructor(private readonly investmentsService: InvestmentsService) { }
