@@ -1,5 +1,3 @@
-import { UseGuards } from '@nestjs/common'
-import { AuthGuard } from '../auth/auth.guard'
 import { Test, TestingModule } from '@nestjs/testing'
 import { InvestmentsController } from './investments.controller'
 
