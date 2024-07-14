@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as moment from 'moment'
 import { Investment } from 'src/db/entities/investment.entity'
@@ -9,11 +9,40 @@ import { CreateInvestmentDto } from './dtos/create-investment.dto'
 
 @Injectable()
 export class InvestmentsService {
+  private readonly logger = new Logger(InvestmentsService.name)
   constructor(
     @InjectRepository(Investment)
     private readonly investmentRepository: Repository<Investment>,
     private readonly usersService: UsersService,
   ) {}
+
+  async getAllInvestments(page: number, status?: string) {
+    const perPage = 10
+    const skip = (page - 1) * perPage
+
+    const query = this.investmentRepository.createQueryBuilder('investment')
+
+    //TODO: ADD status active/inactive
+    // if (status) {
+    //   query = query.where('investment.status = :status', { status })
+
+    // }
+
+    this.logger.debug(`Executing query for page ${page}`)
+    const [investments, total] = await query
+      .orderBy('investment.updatedAt', 'DESC')
+      .skip(skip)
+      .take(perPage)
+      .getManyAndCount()
+
+    const result = {
+      investments,
+      total,
+      page,
+      perPage,
+    }
+    return result
+  }
 
   async create(
     createInvestmentDto: CreateInvestmentDto,

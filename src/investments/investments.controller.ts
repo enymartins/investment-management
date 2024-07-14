@@ -4,9 +4,13 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common'
+import { CacheInterceptor } from '@nestjs/cache-manager'
+
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AuthGuard } from 'src/auth/auth.guard'
 import { Investment } from 'src/db/entities/investment.entity'
@@ -27,6 +31,15 @@ export class InvestmentsController {
   ): Promise<InvestmentDetailsDto> {
     const investment = await this.investmentsService.findOneById(id)
     return investment
+  }
+
+  @UseInterceptors(CacheInterceptor)
+  @Get()
+  async getInvestments(
+    @Query('page') page = 1,
+    @Query('status') status?: string,
+  ) {
+    return this.investmentsService.getAllInvestments(page, status)
   }
 
   @Post()
