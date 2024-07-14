@@ -47,6 +47,7 @@ export class InvestmentsService {
       originalAmount: investment.originalAmount,
       creationDate: investment.creationDate,
       expectedBalance: expectedBalance,
+      amount: investment.amount
     }
   }
 
@@ -69,4 +70,25 @@ export class InvestmentsService {
 
     return parseFloat(expectedBalance.toFixed(2))
   }
+
+  async updateInvestmentsValues() {
+    const investments = await this.investmentRepository.find();
+    const EPSILON = 0.01; // Margem de erro adequada para o seu caso
+
+    for (const investment of investments) {
+      const expectedBalance = await this.calculateExpectedBalance(investment, new Date());
+      const currentAmount = typeof investment.amount === 'string' ? parseFloat(investment.amount) : investment.amount;
+
+      // Comparação com EPSILON
+      if (Math.abs(expectedBalance - currentAmount) < EPSILON) {
+          console.log(`Investment ${investment.id} skipped as expected balance unchanged.`);
+      } else {
+          console.log(`Updating investment ${investment.id} with expected balance ${expectedBalance}.`);
+
+          investment.amount = expectedBalance;
+          await this.investmentRepository.save(investment);
+      }
+    }
+  }
+
 }

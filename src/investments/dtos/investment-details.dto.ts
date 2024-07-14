@@ -8,6 +8,9 @@ export class InvestmentDetailsDto {
   originalAmount: number
 
   @ApiProperty()
+  amount: number
+
+  @ApiProperty()
   expectedBalance: number
 
   @ApiProperty()
