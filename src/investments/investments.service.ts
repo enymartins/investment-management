@@ -23,8 +23,13 @@ export class InvestmentsService {
 
     const user = await this.usersService.findByUserId(userId)
 
-    const newInvestment = this.investmentRepository.create({
+    const expectedBalance = await this.calculateExpectedBalance(
       amount,
+      new Date(creationDate),
+    )
+
+    const newInvestment = this.investmentRepository.create({
+      amount: expectedBalance,
       originalAmount: amount,
       user,
       creationDate,
@@ -33,62 +38,82 @@ export class InvestmentsService {
     return this.investmentRepository.save(newInvestment)
   }
 
-  async findOneById(id: string): Promise<InvestmentDetailsDto> {
-    const investment = await this.investmentRepository.findOne({
-      where: { id },
-    })
-    const expectedBalance = await this.calculateExpectedBalance(
-      investment,
-      new Date(),
-    )
-
-    return {
-      id: investment.id,
-      originalAmount: investment.originalAmount,
-      creationDate: investment.creationDate,
-      expectedBalance: expectedBalance,
-      amount: investment.amount
-    }
-  }
-
-  async calculateExpectedBalance(
-    investment: Investment,
-    currentDate: Date,
-  ): Promise<number> {
-    const creationDate = moment(investment.creationDate)
-    const currentMoment = moment(currentDate)
-
-    const daysDiff = currentMoment.diff(creationDate, 'days')
-
-    const daysInMonth = creationDate.daysInMonth()
-
+  calculateExpectedBalance(amount: number, creationDate: Date): number {
+    const currentMoment = moment()
+    const daysDiff = currentMoment.diff(moment(creationDate), 'days')
+    const daysInMonth = moment(creationDate).daysInMonth()
     const monthlyReturnRate = 0.0052
     const dailyReturnRate = monthlyReturnRate / daysInMonth
 
-    const expectedBalance =
-      investment.originalAmount * Math.pow(1 + dailyReturnRate, daysDiff)
-
+    const expectedBalance = amount * Math.pow(1 + dailyReturnRate, daysDiff)
     return parseFloat(expectedBalance.toFixed(2))
   }
 
-  async updateInvestmentsValues() {
-    const investments = await this.investmentRepository.find();
-    const EPSILON = 0.01; // Margem de erro adequada para o seu caso
+  async findOneById(id: string): Promise<InvestmentDetailsDto> {
+    const investment = await this.investmentRepository.findOne({
+      where: { id },
+      relations: ['withdrawals'],
+    })
 
-    for (const investment of investments) {
-      const expectedBalance = await this.calculateExpectedBalance(investment, new Date());
-      const currentAmount = typeof investment.amount === 'string' ? parseFloat(investment.amount) : investment.amount;
-
-      // Comparação com EPSILON
-      if (Math.abs(expectedBalance - currentAmount) < EPSILON) {
-          console.log(`Investment ${investment.id} skipped as expected balance unchanged.`);
-      } else {
-          console.log(`Updating investment ${investment.id} with expected balance ${expectedBalance}.`);
-
-          investment.amount = expectedBalance;
-          await this.investmentRepository.save(investment);
-      }
-    }
+    const updatedInvestment = this.updateInvestment(investment)
+    return updatedInvestment
   }
 
+  async updateInvestment(
+    investment: Investment,
+  ): Promise<InvestmentDetailsDto> {
+    const amount =
+      typeof investment.amount === 'string'
+        ? parseFloat(investment.amount)
+        : investment.amount
+    const originalAmount =
+      typeof investment.originalAmount === 'string'
+        ? parseFloat(investment.originalAmount)
+        : investment.originalAmount
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const lastSeen = investment.lastSeen
+      ? new Date(investment.lastSeen)
+      : new Date(investment.creationDate)
+    lastSeen.setHours(0, 0, 0, 0)
+    const needRecalculation =
+      investment.withdrawals.some(
+        (withdrawal) => withdrawal.updatedAt > investment.lastUpdated,
+      ) || investment.lastSeen < today
+
+    if (needRecalculation) {
+      if (investment.updatedAt > investment.lastUpdated) {
+        if (investment.withdrawals.length <= 0) {
+          investment.amount = this.calculateExpectedBalance(
+            investment.originalAmount,
+            investment.creationDate,
+          )
+        } else {
+          investment.amount = this.calculateExpectedBalance(
+            investment.amount,
+            investment.creationDate,
+          )
+        }
+        investment.lastUpdated = new Date()
+        investment.lastSeen = today
+        await this.investmentRepository.save({
+          ...investment,
+          amount: investment.amount,
+        })
+      }
+    }
+    return {
+      id: investment.id,
+      lastUpdated: investment.lastUpdated,
+      lastSeen,
+      user: investment.user,
+      updatedAt: investment.updatedAt,
+      originalAmount,
+      creationDate: investment.creationDate,
+      expectedBalance: amount,
+      amount,
+      withdrawals: investment.withdrawals,
+    }
+  }
 }

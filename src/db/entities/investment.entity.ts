@@ -14,6 +14,12 @@ export class Investment extends RootEntity {
   @Column({ type: 'timestamp' })
   creationDate: Date
 
+  @Column({ type: 'timestamp', nullable: true })
+  lastUpdated: Date
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastSeen: Date
+
   @ManyToOne(() => User, (user) => user.investments)
   @JoinColumn({ name: 'user_id' })
   user: User

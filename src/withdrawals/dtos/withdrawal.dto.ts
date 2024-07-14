@@ -1,11 +1,11 @@
-import { InvestmentDetailsDto } from "src/investments/dtos/investment-details.dto"
+import { InvestmentDetailsDto } from 'src/investments/dtos/investment-details.dto'
 
 export class WithdrawalDto {
-    amount: number
+  amount: number
 
-    netValue: number
+  netValue: number
 
-    taxRate: number
+  taxRate: number
 
-    investment: InvestmentDetailsDto
+  investment: InvestmentDetailsDto
 }
