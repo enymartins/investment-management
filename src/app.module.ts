@@ -1,7 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common'
 import { CacheModule } from '@nestjs/cache-manager'
 import { ConfigModule } from '@nestjs/config'
-import { APP_PIPE } from '@nestjs/core'
+import { APP_GUARD, APP_PIPE } from '@nestjs/core'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { DbModule } from './db/db.module'
@@ -9,6 +9,7 @@ import { InvestmentsModule } from './investments/investments.module'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
 import { WithdrawalsModule } from './withdrawals/withdrawals.module'
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
 
 @Module({
   imports: [
@@ -17,6 +18,10 @@ import { WithdrawalsModule } from './withdrawals/withdrawals.module'
       max: 200,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 10,
+    }]),
     InvestmentsModule,
     DbModule,
     UsersModule,
@@ -30,6 +35,11 @@ import { WithdrawalsModule } from './withdrawals/withdrawals.module'
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
+    
   ],
 })
 export class AppModule {}
