@@ -28,8 +28,10 @@ export class InvestmentsController {
   @Get(':id')
   async getInvestmentDetails(
     @Param('id') id: string,
+    @Req() req,
   ): Promise<InvestmentDetailsDto> {
-    const investment = await this.investmentsService.findOneById(id)
+    const userId = req.user.sub;
+    const investment = await this.investmentsService.findOneById(id, userId)
     return investment
   }
 
@@ -37,9 +39,11 @@ export class InvestmentsController {
   @Get()
   async getInvestments(
     @Query('page') page = 1,
+    @Req() req,
     @Query('status') status?: string,
   ) {
-    return this.investmentsService.getAllInvestments(page, status)
+    const userId = req.user.sub;
+    return this.investmentsService.getAllInvestments(page, userId)
   }
 
   @Post()

@@ -20,8 +20,8 @@ export class WithdrawalsService {
     private readonly invesmentsService: InvestmentsService,
   ) {}
 
-  async create(investmentId: string, amount: number): Promise<WithdrawalDto> {
-    const investment = await this.invesmentsService.findOneById(investmentId)
+  async create(investmentId: string, amount: number, userId: string): Promise<WithdrawalDto> {
+    const investment = await this.invesmentsService.findOneById(investmentId, userId)
 
     if (!investment) {
       throw new NotFoundException('Investment not found')

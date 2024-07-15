@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { AuthGuard } from 'src/auth/auth.guard'
 import { Withdrawal } from 'src/db/entities/withdrawal.entity'
@@ -17,10 +17,13 @@ export class WithdrawalsController {
   async create(
     @Param('investmentId') investmentId: string,
     @Body() createWithdrawalDto: CreateWithdrawalDto,
+    @Req() req
   ): Promise<WithdrawalDto> {
+    const userId = req.user.sub
     return this.withdrawalsService.create(
       investmentId,
       createWithdrawalDto.amount,
+      userId
     )
   }
 

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as moment from 'moment'
 import { Investment } from '../db/entities/investment.entity'
@@ -14,19 +14,14 @@ export class InvestmentsService {
     @InjectRepository(Investment)
     private readonly investmentRepository: Repository<Investment>,
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
 
-  async getAllInvestments(page: number, status?: string) {
+  async getAllInvestments(page: number, userId?: string) {
     const perPage = 10
     const skip = (page - 1) * perPage
 
     const query = this.investmentRepository.createQueryBuilder('investment')
-
-    //TODO: ADD status active/inactive
-    // if (status) {
-    //   query = query.where('investment.status = :status', { status })
-
-    // }
+      .where('investment.user_id = :userId', { userId })
 
     this.logger.debug(`Executing query for page ${page}`)
     const [investments, total] = await query
@@ -78,11 +73,17 @@ export class InvestmentsService {
     return parseFloat(expectedBalance.toFixed(2))
   }
 
-  async findOneById(id: string): Promise<InvestmentDetailsDto> {
+  async findOneById(id: string, userId: string): Promise<InvestmentDetailsDto> {
     const investment = await this.investmentRepository.findOne({
-      where: { id },
+      where: { id, user: { id: userId } },
       relations: ['withdrawals'],
     })
+
+    console.log(userId)
+
+    if (!investment) {
+      throw new NotFoundException(`Investment with ID ${id} was not found`)
+    }
 
     const updatedInvestment = this.updateInvestment(investment)
     return updatedInvestment
