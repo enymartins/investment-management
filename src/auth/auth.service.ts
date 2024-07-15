@@ -19,7 +19,8 @@ export class AuthService {
   }
 
   async signIn(loginDto: LoginDto): Promise<AuthResponseDto> {
-    const foundUser = await this.usersService.findByCpf(loginDto.cpf)
+    const normalizedCpf = loginDto.cpf.replace(/\D/g, '')
+    const foundUser = await this.usersService.findByCpf(normalizedCpf)
 
     if (
       !foundUser ||
