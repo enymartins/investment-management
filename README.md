@@ -64,6 +64,16 @@ GET /investments
 Description: Get all investments from one user
 
 ```
+GET /withdrawals/:investmentId
+```
+Description: View a withdrawal from a specific investment
+
+```
+POST /users
+```
+Description: Create new user to create investments
+
+```
 POST /investments
 ```
 Description: Create a new investment
