@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as moment from 'moment'
-import { Investment } from 'src/db/entities/investment.entity'
-import { UsersService } from 'src/users/users.service'
+import { Investment } from '../db/entities/investment.entity'
+import { UsersService } from '../users/users.service'
 import { Repository } from 'typeorm'
 import { InvestmentDetailsDto } from './dtos/investment-details.dto'
 import { CreateInvestmentDto } from './dtos/create-investment.dto'
@@ -106,6 +106,7 @@ export class InvestmentsService {
       ? new Date(investment.lastSeen)
       : new Date(investment.creationDate)
     lastSeen.setHours(0, 0, 0, 0)
+
     const needRecalculation =
       investment.withdrawals.some(
         (withdrawal) => withdrawal.updatedAt > investment.lastUpdated,
@@ -125,13 +126,14 @@ export class InvestmentsService {
           )
         }
         investment.lastUpdated = new Date()
-        investment.lastSeen = today
-        await this.investmentRepository.save({
-          ...investment,
-          amount: investment.amount,
-        })
       }
     }
+
+    investment.lastSeen = today
+    await this.investmentRepository.save({
+      ...investment,
+      amount: investment.amount,
+    })
     return {
       id: investment.id,
       lastUpdated: investment.lastUpdated,

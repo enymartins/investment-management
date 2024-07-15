@@ -18,10 +18,12 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
       max: 200,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 20,
+      },
+    ]),
     InvestmentsModule,
     DbModule,
     UsersModule,
@@ -37,9 +39,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
     },
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard
-    }
-    
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

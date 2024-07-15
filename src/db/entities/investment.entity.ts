@@ -26,4 +26,12 @@ export class Investment extends RootEntity {
 
   @OneToMany(() => Withdrawal, (withdrawal) => withdrawal.investment)
   withdrawals: Withdrawal[]
+
+  constructor(investment?: Partial<Investment>) {
+    super()
+    ;(this.id = investment?.id), (this.creationDate = investment?.creationDate)
+    this.amount = investment?.amount
+    this.originalAmount = investment?.originalAmount
+    this.user = investment?.user
+  }
 }
