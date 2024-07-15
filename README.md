@@ -9,35 +9,22 @@ This project allows you to create one or more investments, search for them, and 
 git clone <repository-url>
 cd <repository-name>
 ```
-2. Install dependencies with the command:
+2. Switch to the develop branch to test or run the latest implementations:
 ```
-yarn add
+git checkout develop
+```
+3. Install dependencies with the command:
+```
+yarn
 
 ```
-3. Create a `.env` file in the root directory with the necessary configurations. You can follow `.env.example` in the project for guidance.
-
-4. Start a new database using the command:
-
-```
-docker-compose up
-```
-
-or, to run in detached mode:
-
-```
-docker-compose up -d
-
-```
+4. Create a `.env` file in the root directory with the necessary configurations. You can follow `.env.example` in the project for guidance.
 
 5. Run migrations:
 ```
 yarn migration:run
 ````
 
-6. Switch to the develop branch to test or run the latest implementations:
-```
-git checkout develop
-```
 7. Start the server:
 
 ```
