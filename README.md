@@ -54,6 +54,20 @@ http://localhost:3000/api
 
 ## Endpoints
 
+## Users
+```
+POST /users
+```
+Description: Create new user to create investments
+
+## Authentication
+```
+POST /auth/login
+```
+Description: Authenticate a user and obtain a JWT token.
+
+## Investments
+
 `GET /investments/:investmentId`
 
 Description: Get an investment by ID.
@@ -64,19 +78,15 @@ GET /investments
 Description: Get all investments from one user
 
 ```
-GET /withdrawals/:investmentId
-```
-Description: View a withdrawal from a specific investment
-
-```
-POST /users
-```
-Description: Create new user to create investments
-
-```
 POST /investments
 ```
 Description: Create a new investment
+
+## Withdrawals
+```
+GET /withdrawals/:investmentId
+```
+Description: View a withdrawal from a specific investment
 
 ```
 POST /withdrawals/:investmentId
