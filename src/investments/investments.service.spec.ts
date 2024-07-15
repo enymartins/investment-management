@@ -16,6 +16,7 @@ const mockInvestmentRepository = {
   save: jest.fn(),
   findOne: jest.fn(),
   createQueryBuilder: jest.fn().mockReturnValue({
+    where: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     skip: jest.fn().mockReturnThis(),
     take: jest.fn().mockReturnThis(),
@@ -63,7 +64,7 @@ describe('InvestmentsService', () => {
 
   describe('findAll', () => {
     it('should return a investiment list successfully', async () => {
-      const result = await service.getAllInvestments(2)
+      const result = await service.getAllInvestments(2, '123')
       expect(result).toEqual({
         investments: investimentList,
         page: 2,
