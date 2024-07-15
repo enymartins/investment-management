@@ -6,7 +6,7 @@ import { CreateWithdrawalDto } from './dtos/create-withdrawal.dto'
 import { WithdrawalDto } from './dtos/withdrawal.dto'
 import { WithdrawalsService } from './withdrawals.service'
 
-@ApiTags('withdrawals')
+@ApiTags('Withdrawals')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 @Controller('withdrawals')
@@ -44,6 +44,7 @@ export class WithdrawalsController {
   }
 
   @Get(':investmentId')
+  @ApiOperation({ summary: 'View a withdrawal from a specific investment' })
   async findByInvestment(
     @Param('investmentId') investmentId: string,
     @Req() req

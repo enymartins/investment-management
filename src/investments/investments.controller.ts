@@ -27,6 +27,7 @@ export class InvestmentsController {
   constructor(private readonly investmentsService: InvestmentsService) { }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get an investment by id' })
   async getInvestmentDetails(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req,
