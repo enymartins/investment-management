@@ -14,13 +14,14 @@ export class InvestmentsService {
     @InjectRepository(Investment)
     private readonly investmentRepository: Repository<Investment>,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
   async getAllInvestments(page: number, userId?: string) {
     const perPage = 10
     const skip = (page - 1) * perPage
 
-    const query = this.investmentRepository.createQueryBuilder('investment')
+    const query = this.investmentRepository
+      .createQueryBuilder('investment')
       .where('investment.user_id = :userId', { userId })
 
     this.logger.debug(`Executing query for page ${page}`)

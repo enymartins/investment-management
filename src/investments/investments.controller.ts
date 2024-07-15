@@ -12,7 +12,14 @@ import {
 } from '@nestjs/common'
 import { CacheInterceptor } from '@nestjs/cache-manager'
 
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { AuthGuard } from 'src/auth/auth.guard'
 import { Investment } from 'src/db/entities/investment.entity'
 import { InvestmentDetailsDto } from './dtos/investment-details.dto'
@@ -24,7 +31,7 @@ import { InvestmentsService } from './investments.service'
 @ApiBearerAuth()
 @Controller('investments')
 export class InvestmentsController {
-  constructor(private readonly investmentsService: InvestmentsService) { }
+  constructor(private readonly investmentsService: InvestmentsService) {}
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an investment by id' })
@@ -32,7 +39,7 @@ export class InvestmentsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req,
   ): Promise<InvestmentDetailsDto> {
-    const userId = req.user.sub;
+    const userId = req.user.sub
     const investment = await this.investmentsService.findOneById(id, userId)
     return investment
   }
@@ -40,12 +47,15 @@ export class InvestmentsController {
   @UseInterceptors(CacheInterceptor)
   @Get()
   @ApiOperation({ summary: 'Get all investments' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number for pagination', example: 1 })
-  async getInvestments(
-    @Query('page') page = 1,
-    @Req() req,
-  ) {
-    const userId = req.user.sub;
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  async getInvestments(@Query('page') page = 1, @Req() req) {
+    const userId = req.user.sub
     return this.investmentsService.getAllInvestments(page, userId)
   }
 
@@ -64,7 +74,10 @@ export class InvestmentsController {
       },
     },
   })
-  @ApiResponse({ status: 201, description: 'The investment has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The investment has been successfully created.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async createInvestment(

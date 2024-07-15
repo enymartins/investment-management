@@ -13,7 +13,7 @@ import { LoginDto } from './dtos/login.dto'
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -30,8 +30,8 @@ export class AuthController {
       example1: {
         summary: 'Login example',
         value: {
-          cpf: "02426891084",
-          password: "1234567"
+          cpf: '02426891084',
+          password: '1234567',
         },
       },
     },
