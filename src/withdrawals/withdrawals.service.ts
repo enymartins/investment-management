@@ -31,12 +31,8 @@ export class WithdrawalsService {
       throw new BadRequestException('Insufficient funds')
     }
 
-    console.log('\n\namount antes da subtração saque', investment.amount)
-    console.log('\n\namount do saque', amount)
-
     const remainingAmount = investment.amount - amount
     investment.amount = remainingAmount
-    console.log('\n\nremain', remainingAmount)
 
     const creationDate = investment.creationDate
     const currentDate = new Date()

@@ -79,8 +79,6 @@ export class InvestmentsService {
       relations: ['withdrawals'],
     })
 
-    console.log(userId)
-
     if (!investment) {
       throw new NotFoundException(`Investment with ID ${id} was not found`)
     }

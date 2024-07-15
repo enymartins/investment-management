@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
   Req,
@@ -27,7 +28,7 @@ export class InvestmentsController {
 
   @Get(':id')
   async getInvestmentDetails(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req,
   ): Promise<InvestmentDetailsDto> {
     const userId = req.user.sub;
